@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("com.leimo.usercenter.mapper")
-public class UserCenterApplication {
+public class PartnerMatchApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserCenterApplication.class, args);
+        SpringApplication.run(PartnerMatchApplication.class, args);
     }
 
 }
