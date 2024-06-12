@@ -91,7 +91,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.leimo.usercenter.PartnerMatchApplication</mainClass>
+                    <mainClass>com.leimo.partnermatch.PartnerMatchApplication</mainClass>
                     <skip>false</skip>
                 </configuration>
                 <executions>
