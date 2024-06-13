@@ -1,6 +1,8 @@
 package com.leimo.partnermatch.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.leimo.partnermatch.mapper.UserMapper;
 import com.leimo.partnermatch.model.entity.User;
 import org.junit.jupiter.api.Assertions;
@@ -8,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.DigestUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 @SpringBootTest
 class UserServiceTest {
@@ -62,4 +67,29 @@ class UserServiceTest {
         User user = userMapper.selectOne(queryWrapper);
         System.out.println(user);
     }
+
+    @Test
+    void searchUserByTags() {
+        List<String> tagNameList = Arrays.asList("Java", "Python");
+        List<User> userList = userService.searchUsersByTags(tagNameList);
+        System.out.println(userList);
+        // Assertions.assertNotNull(userList);
+        
+    }
+
+    @Test
+    void testGson() {
+        Gson gson = new Gson();
+        // String str = "{\"Java\",\"C++\",\"Python\"}";
+        // List<String> list = gson.fromJson(str, new TypeToken<List<String>>() {
+        // }.getType());
+        // System.out.println(list);
+        List<String> list = Arrays.asList("Java", "C++", "Python");
+        String jsonStr = gson.toJson(list);
+        System.out.println("jsonStr = " + jsonStr);
+        List<String> jsonList = gson.fromJson(jsonStr, new TypeToken<List<String>>() {
+        }.getType());
+        System.out.println("jsonList = " + jsonList);
+    }
+
 }

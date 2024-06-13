@@ -9,6 +9,9 @@ spring:
   # session失效时间
   session:
     timeout: 86400
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
 server:
   port: 8080
   servlet:
@@ -17,6 +20,7 @@ mybatis-plus:
   configuration:
     # 默认是使用驼峰映射
     map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       # 逻辑删除
