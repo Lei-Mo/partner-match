@@ -10,6 +10,8 @@
         <result property="userAccount" column="userAccount" jdbcType="VARCHAR"/>
         <result property="avatarUrl" column="avatarUrl" jdbcType="VARCHAR"/>
         <result property="gender" column="gender" jdbcType="TINYINT"/>
+        <result property="profile" column="profile" jdbcType="VARCHAR"/>
+
         <result property="userPassword" column="userPassword" jdbcType="VARCHAR"/>
         <result property="phone" column="phone" jdbcType="VARCHAR"/>
         <result property="email" column="email" jdbcType="VARCHAR"/>
@@ -27,6 +29,6 @@
         avatarUrl,gender,userPassword,
         phone,email,userStatus,
         createTime,updateTime,isDelete,
-        userRole,planetCode,tags
+        userRole,planetCode,tags,profile
     </sql>
 </mapper>

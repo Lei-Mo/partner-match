@@ -1,6 +1,7 @@
 package com.leimo.partnermatch.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.leimo.partnermatch.common.BaseResponse;
 import com.leimo.partnermatch.common.ErrorCode;
 import com.leimo.partnermatch.common.ResultUtils;
@@ -10,13 +11,17 @@ import com.leimo.partnermatch.model.entity.User;
 import com.leimo.partnermatch.model.request.UserLoginRequest;
 import com.leimo.partnermatch.model.request.UserRegisterRequest;
 import com.leimo.partnermatch.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.leimo.partnermatch.constant.UserConstant.ADMIN_ROLE;
@@ -28,10 +33,14 @@ import static com.leimo.partnermatch.constant.UserConstant.ADMIN_ROLE;
  */
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 用户注册
@@ -130,6 +139,35 @@ public class UserController {
             return userService.getSafetyUser(user);
         }).collect(Collectors.toList());
         return ResultUtils.success(res);
+    }
+
+    /**
+     * 用户推荐
+     */
+    @GetMapping("recommend")
+    public BaseResponse<Page<User>> recommendUsers(long pageSize, long pageNum, HttpServletRequest request) {
+        User loginUser = userService.getLoginUser(request);
+
+
+        // 如果有缓存，直接从缓存获取
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        String redisKey = String.format("partnermatch:user:recommend:%s", loginUser.getId());
+        Page<User> userPage = (Page<User>) valueOperations.get(redisKey);
+        if (userPage != null) {
+            return ResultUtils.success(userPage);
+        }
+
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        userPage = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        // 写缓存
+        try {
+            // 一定要设置过期时间（默认一天的时间）
+            valueOperations.set(redisKey, userPage, 86400000, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            log.error("redis set key error", e);
+        }
+
+        return ResultUtils.success(userPage);
     }
 
     @GetMapping("/search/tags")

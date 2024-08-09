@@ -9,9 +9,17 @@ spring:
   # session失效时间
   session:
     timeout: 86400
+    store-type: redis
+
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+  # redis 配置
+  redis:
+    port: 6379
+    host: localhost
+    database: 0
+    password: 123456
 server:
   port: 8080
   servlet:
@@ -20,7 +28,7 @@ mybatis-plus:
   configuration:
     # 默认是使用驼峰映射
     map-underscore-to-camel-case: false
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       # 逻辑删除
